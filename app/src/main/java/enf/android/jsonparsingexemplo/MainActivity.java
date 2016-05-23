@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               new JSONTask().execute("http://jsonparsing.parseapp.com/jsonData/moviesDemoItem.txt");
+               new JSONTask().execute("http://jsonparsing.parseapp.com/jsonData/moviesDemoList.txt");
 
 
             }
@@ -81,13 +81,25 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject parentObject = new JSONObject(finalJSON);
                 JSONArray parentArray = parentObject.getJSONArray("movies");
 
-                JSONObject finalObject = parentArray.getJSONObject(0);
+                int tamanho = parentArray.length();
 
-                String movieName = finalObject.getString("movie");
-                int    movieYear = finalObject.getInt("year");
+                String resultado="";
 
-                return movieName + " - "+movieYear;
+                for (int i=0;i<tamanho;i++){
 
+                    JSONObject finalObject = parentArray.getJSONObject(i);
+
+                    String movieName = finalObject.getString("movie");
+                    int    movieYear = finalObject.getInt("year");
+
+                    resultado = resultado + movieName + " - "+movieYear +"\n";
+
+
+                }
+
+
+                //tvData.setText(r);
+                return resultado;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
