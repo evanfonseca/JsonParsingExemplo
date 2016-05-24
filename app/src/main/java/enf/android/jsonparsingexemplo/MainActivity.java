@@ -1,5 +1,6 @@
 package enf.android.jsonparsingexemplo;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +22,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import enf.android.jsonparsingexemplo.models.Movie;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,76 +42,13 @@ public class MainActivity extends AppCompatActivity {
         btnHIT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new JSONTask().execute("http://jsonparsing.parseapp.com/jsonData/moviesDemoList.txt");
+                //new JSONTask().execute("http://jsonparsing.parseapp.com/jsonData/moviesDemoList.txt");
+
+                startActivity(new Intent(MainActivity.this,ShowMovieList.class));
             }
         });
     }
 
-    public class  JSONTask extends AsyncTask<String,String,String>{
 
-        @Override
-        protected String doInBackground(String... params) {
-
-            HttpURLConnection connection = null;
-            BufferedReader reader= null;
-
-            try {
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer=new StringBuffer();
-                String line="";
-
-                while ((line=reader.readLine())!=null){
-                    buffer.append(line);
-                }
-
-                String finalJSON=buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJSON);
-                JSONArray parentArray = parentObject.getJSONArray("movies");
-                int tamanho = parentArray.length();
-
-                String resultado="";
-
-                for (int i=0;i<tamanho;i++){
-                    JSONObject finalObject = parentArray.getJSONObject(i);
-                    String movieName = finalObject.getString("movie");
-                    int    movieYear = finalObject.getInt("year");
-
-                    resultado = resultado + movieName + " - "+movieYear +"\n";
-                }
-                return resultado;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if(connection!=null){
-                    connection.disconnect();
-                }
-
-                try {
-                    if(reader!=null){
-                        reader.close();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            tvData.setText(result);
-        }
-    }
 
 }
