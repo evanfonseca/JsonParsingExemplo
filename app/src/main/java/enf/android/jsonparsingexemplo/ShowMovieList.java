@@ -172,11 +172,4 @@ public class ShowMovieList extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
 }
