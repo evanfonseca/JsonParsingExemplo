@@ -16,6 +16,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +46,18 @@ public class ShowMovieList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_movie_list);
+
+        // Create default options which will be used for every
+//  displayImage(...) call if no options will be passed to this method
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+        .defaultDisplayImageOptions(defaultOptions)
+        .build();
+        ImageLoader.getInstance().init(config); // Do it on Application start
+
 
         url="http://jsonparsing.parseapp.com/jsonData/moviesData.txt";
 
@@ -228,10 +244,10 @@ public class ShowMovieList extends AppCompatActivity {
             tvMovie.setText(movieList.get(position).getMovie());
 
             tvTagline.setText(movieList.get(position).getTagline());
-            tvYear.setText(""+movieList.get(position).getYear());
+            tvYear.setText("Year: "+movieList.get(position).getYear());
             //tvYear.setText(""+2016);
-            tvDuration.setText(movieList.get(position).getDuration());
-            tvDirector.setText(movieList.get(position).getDirector());
+            tvDuration.setText("Duration: "+movieList.get(position).getDuration());
+            tvDirector.setText("Director: "+movieList.get(position).getDirector());
 
             rbMovieRating.setRating(movieList.get(position).getRating()/2);
 
@@ -242,10 +258,14 @@ public class ShowMovieList extends AppCompatActivity {
                 stringBuffer.append(cast.getName()+" , ");
             }
 
-            tvCast.setText(stringBuffer.toString());
+            tvCast.setText("Cast: "+stringBuffer.toString());
             tvStory.setText(movieList.get(position).getStory());
 
             //ImageLoad
+            // Then later, when you want to display image
+            ImageLoader.getInstance().displayImage(movieList.get(position).getImage(), ivMovIcon); // Default options will be used
+
+
             return convertView;
 
         }
