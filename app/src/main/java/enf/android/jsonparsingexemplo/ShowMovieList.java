@@ -4,9 +4,17 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +48,7 @@ public class ShowMovieList extends AppCompatActivity {
         lvMovies = (ListView) findViewById(R.id.lvMovies);
 
 
-
-
+        new JSONTask().execute(url);
 
     }
 
@@ -70,10 +77,6 @@ public class ShowMovieList extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
     public class  JSONTask extends AsyncTask<String,String,List<Movie>> {
 
         @Override
@@ -85,6 +88,8 @@ public class ShowMovieList extends AppCompatActivity {
             try {
                 URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
+
+
                 InputStream stream = connection.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(stream));
 
@@ -162,11 +167,86 @@ public class ShowMovieList extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Movie> result) {
             super.onPostExecute(result);
-            //tvData.setText(result);
-
-            //Colocar aqui toda a especificação para trabalhar com a lista de filmes
 
             MovieAdapter movieAdapter =new MovieAdapter(getApplicationContext(),R.layout.row,result);
+            lvMovies.setAdapter(movieAdapter);
+
+            /*
+            StringBuilder stringBuilder=new StringBuilder();
+            for (Movie m: result) {
+
+                stringBuilder.append(m.getMovie()+"\n");
+
+            }
+            Toast.makeText(getApplicationContext(),""+stringBuilder,Toast.LENGTH_LONG).show();
+            */
+        }
+    }
+
+    public class MovieAdapter  extends ArrayAdapter {
+        private List<Movie> movieList;
+        private int resource;
+        private LayoutInflater inflater;
+
+        public MovieAdapter(Context context, int resource, List<Movie> objects) {
+            super(context, resource, objects);
+            movieList=objects;
+            this.resource=resource;
+            inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if(convertView == null){
+
+                convertView = inflater.inflate(resource,null);
+            }
+
+            ImageView ivMovIcon;
+            TextView tvMovie;
+            TextView tvTagline;
+            TextView tvYear;
+            TextView tvDuration;
+            TextView tvDirector;
+            RatingBar rbMovieRating;
+            TextView tvCast;
+            TextView tvStory;
+
+            ivMovIcon= (ImageView) convertView.findViewById(R.id.ivIcon);
+            tvMovie= (TextView) convertView.findViewById(R.id.tvMovie);
+            tvTagline= (TextView) convertView.findViewById(R.id.tvTagline);
+            tvYear= (TextView) convertView.findViewById(R.id.tvYear);
+            tvDuration= (TextView) convertView.findViewById(R.id.tvDuration);
+            tvDirector= (TextView) convertView.findViewById(R.id.tvDirector);
+            rbMovieRating= (RatingBar) convertView.findViewById(R.id.rbMovie);
+            tvCast= (TextView) convertView.findViewById(R.id.tvCast);
+            tvStory= (TextView) convertView.findViewById(R.id.tvStory);
+
+
+            tvMovie.setText(movieList.get(position).getMovie());
+
+            tvTagline.setText(movieList.get(position).getTagline());
+            tvYear.setText(""+movieList.get(position).getYear());
+            //tvYear.setText(""+2016);
+            tvDuration.setText(movieList.get(position).getDuration());
+            tvDirector.setText(movieList.get(position).getDirector());
+
+            rbMovieRating.setRating(movieList.get(position).getRating()/2);
+
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (Movie.Cast cast: movieList.get(position).getCastList())
+            {
+                stringBuffer.append(cast.getName()+" , ");
+            }
+
+            tvCast.setText(stringBuffer.toString());
+            tvStory.setText(movieList.get(position).getStory());
+
+            //ImageLoad
+            return convertView;
 
         }
     }
