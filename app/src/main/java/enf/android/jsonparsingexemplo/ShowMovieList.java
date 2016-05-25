@@ -1,6 +1,7 @@
 package enf.android.jsonparsingexemplo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -229,6 +233,7 @@ public class ShowMovieList extends AppCompatActivity {
             RatingBar rbMovieRating;
             TextView tvCast;
             TextView tvStory;
+            final ProgressBar progressBar=(ProgressBar) convertView.findViewById(R.id.progressBar);
 
             ivMovIcon= (ImageView) convertView.findViewById(R.id.ivIcon);
             tvMovie= (TextView) convertView.findViewById(R.id.tvMovie);
@@ -263,7 +268,27 @@ public class ShowMovieList extends AppCompatActivity {
 
             //ImageLoad
             // Then later, when you want to display image
-            ImageLoader.getInstance().displayImage(movieList.get(position).getImage(), ivMovIcon); // Default options will be used
+            ImageLoader.getInstance().displayImage(movieList.get(position).getImage(), ivMovIcon, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }); // Default options will be used
 
 
             return convertView;
