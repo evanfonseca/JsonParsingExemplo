@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">JsonParsingExemplo</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_reflesh">Reflesh</string>
 </resources>
