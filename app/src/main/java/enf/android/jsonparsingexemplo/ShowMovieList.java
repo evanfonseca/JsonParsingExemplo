@@ -1,5 +1,6 @@
 package enf.android.jsonparsingexemplo;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class ShowMovieList extends AppCompatActivity {
 
     String url;
     ListView lvMovies;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +165,8 @@ public class ShowMovieList extends AppCompatActivity {
             //tvData.setText(result);
 
             //Colocar aqui toda a especificação para trabalhar com a lista de filmes
+
+            MovieAdapter movieAdapter =new MovieAdapter(getApplicationContext(),R.layout.row,result);
 
         }
     }
