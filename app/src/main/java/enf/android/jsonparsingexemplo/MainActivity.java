@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvData = (TextView) findViewById(R.id.tvJsonItem);
+        //tvData = (TextView) findViewById(R.id.tvJsonItem);
         Button btnHIT= (Button) findViewById(R.id.btnHIT);
 
         btnHIT.setOnClickListener(new View.OnClickListener() {
