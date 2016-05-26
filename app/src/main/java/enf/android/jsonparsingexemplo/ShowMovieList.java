@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -219,56 +220,34 @@ public class ShowMovieList extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
+            ViewHolder holder= null;
+
             if(convertView == null){
 
                 convertView = inflater.inflate(resource,null);
+
+                holder=new ViewHolder();
+
+                holder.ivMovIcon= (ImageView) convertView.findViewById(R.id.ivIcon);
+                holder.tvMovie= (TextView) convertView.findViewById(R.id.tvMovie);
+                holder.tvTagline= (TextView) convertView.findViewById(R.id.tvTagline);
+                holder.tvYear= (TextView) convertView.findViewById(R.id.tvYear);
+                holder.tvDuration= (TextView) convertView.findViewById(R.id.tvDuration);
+                holder.tvDirector= (TextView) convertView.findViewById(R.id.tvDirector);
+                holder.rbMovieRating= (RatingBar) convertView.findViewById(R.id.rbMovie);
+                holder.tvCast= (TextView) convertView.findViewById(R.id.tvCast);
+                holder.tvStory= (TextView) convertView.findViewById(R.id.tvStory);
+
+                convertView.setTag(holder);
+            } else {
+                holder= (ViewHolder) convertView.getTag();
             }
 
-            ImageView ivMovIcon;
-            TextView tvMovie;
-            TextView tvTagline;
-            TextView tvYear;
-            TextView tvDuration;
-            TextView tvDirector;
-            RatingBar rbMovieRating;
-            TextView tvCast;
-            TextView tvStory;
             final ProgressBar progressBar=(ProgressBar) convertView.findViewById(R.id.progressBar);
-
-            ivMovIcon= (ImageView) convertView.findViewById(R.id.ivIcon);
-            tvMovie= (TextView) convertView.findViewById(R.id.tvMovie);
-            tvTagline= (TextView) convertView.findViewById(R.id.tvTagline);
-            tvYear= (TextView) convertView.findViewById(R.id.tvYear);
-            tvDuration= (TextView) convertView.findViewById(R.id.tvDuration);
-            tvDirector= (TextView) convertView.findViewById(R.id.tvDirector);
-            rbMovieRating= (RatingBar) convertView.findViewById(R.id.rbMovie);
-            tvCast= (TextView) convertView.findViewById(R.id.tvCast);
-            tvStory= (TextView) convertView.findViewById(R.id.tvStory);
-
-
-            tvMovie.setText(movieList.get(position).getMovie());
-
-            tvTagline.setText(movieList.get(position).getTagline());
-            tvYear.setText("Year: "+movieList.get(position).getYear());
-            //tvYear.setText(""+2016);
-            tvDuration.setText("Duration: "+movieList.get(position).getDuration());
-            tvDirector.setText("Director: "+movieList.get(position).getDirector());
-
-            rbMovieRating.setRating(movieList.get(position).getRating()/2);
-
-
-            StringBuffer stringBuffer = new StringBuffer();
-            for (Movie.Cast cast: movieList.get(position).getCastList())
-            {
-                stringBuffer.append(cast.getName()+" , ");
-            }
-
-            tvCast.setText("Cast: "+stringBuffer.toString());
-            tvStory.setText(movieList.get(position).getStory());
 
             //ImageLoad
             // Then later, when you want to display image
-            ImageLoader.getInstance().displayImage(movieList.get(position).getImage(), ivMovIcon, new ImageLoadingListener() {
+            ImageLoader.getInstance().displayImage(movieList.get(position).getImage(), holder.ivMovIcon, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
                     progressBar.setVisibility(View.VISIBLE);
@@ -291,7 +270,45 @@ public class ShowMovieList extends AppCompatActivity {
             }); // Default options will be used
 
 
+            holder.tvMovie.setText(movieList.get(position).getMovie());
+
+            holder.tvTagline.setText(movieList.get(position).getTagline());
+            holder.tvYear.setText("Year: "+movieList.get(position).getYear());
+            //tvYear.setText(""+2016);
+            holder.tvDuration.setText("Duration: "+movieList.get(position).getDuration());
+            holder.tvDirector.setText("Director: "+movieList.get(position).getDirector());
+
+            holder.rbMovieRating.setRating(movieList.get(position).getRating()/2);
+
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (Movie.Cast cast: movieList.get(position).getCastList())
+            {
+                stringBuffer.append(cast.getName()+" , ");
+            }
+
+            holder.tvCast.setText("Cast: "+stringBuffer.toString());
+            holder.tvStory.setText(movieList.get(position).getStory());
+
+
+
+
             return convertView;
+
+        }
+
+
+        class ViewHolder {
+
+            private ImageView ivMovIcon;
+            private TextView tvMovie;
+            private TextView tvTagline;
+            private TextView tvYear;
+            private TextView tvDuration;
+            private TextView tvDirector;
+            private RatingBar rbMovieRating;
+            private TextView tvCast;
+            private TextView tvStory;
 
         }
     }
